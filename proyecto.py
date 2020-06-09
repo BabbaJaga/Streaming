@@ -20,24 +20,60 @@ if __name__ == "__main__":
                 Writer.verify_writing(lst)
 
         elif option == 2:
-            ID = Menu.ask_for_ID()
+            ID = Menu.ask_for_data()
             Writer = streaming.Writer()
             Writer.verify_id_search(ID)
             
         elif option == 3:
-            pass
+            Title = Menu.ask_for_data()
+            Writer = streaming.Writer()
+            search_dic = Writer.verify_title_search(Title)
+
+            if search_dic != None:
+                array = Menu.search_results_adjust(search_dic)
+                Menu.display_search_results_title(array)          
+
         elif option == 4:
-            pass
+            Genre = Menu.ask_for_data()
+            Writer = streaming.Writer()
+            search_dic = Writer.verify_genre_search(Genre)
+
+            if search_dic != None:
+                array = Menu.search_results_adjust(search_dic)
+                Menu.display_search_results_general(array)          
+
         elif option == 5:
-            pass
+            Writer = streaming.Writer()
+            working_dic, __ = Writer.file_processing()
+            array = Menu.search_results_adjust(working_dic)
+            Menu.display_search_results_general(array)    
+
         elif option == 6:
-            pass
+            Lists = streaming.Lists()
+            search_dic = Lists.general("P",9)
+            array = Menu.search_results_adjust(search_dic)
+            Menu.display_search_results_movies(array)
+
         elif option == 7:
-            pass
+            Lists = streaming.Lists()
+            search_dic = Lists.general("S",9)
+            array = Menu.search_results_adjust(search_dic)
+            Menu.display_search_results_series(array)
+
         elif option == 8:
-            pass
+            Lists = streaming.Lists()
+            search_dic = Lists.general("D\n",9)
+            array = Menu.search_results_adjust(search_dic)
+            Menu.display_search_results_general(array)
+
         elif option == 9:
-            pass
+            upper,lower = Menu.ask_for_input_rating()
+            Lists = streaming.Lists()
+            search_dic = Lists.general("R\n",2, upper, lower)
+            array = Menu.search_results_adjust(search_dic)
+            Menu.display_search_results_general(array)
+
         elif option == 10:
-            pass
+            print("Exiting program...")
+            quit()
 

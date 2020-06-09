@@ -14,13 +14,11 @@ class Video():
         self.duration = int(input("Enter Duration     : "))
         self.rating = round(float(input("Enter the Rating : ")),1)
 
-    def show_data(self,ID,title,duration,rating):
+    def data_adjust(self):
+        self.ID = self.ID.upper()
+        self.title = self.title.upper()
 
-        self.ID = ID
-        self.title = title
-        self.duration = duration
-        self.rating = rating
-
+    def show_data(self):
         print("ID : ", self.ID)
         print("Title : ", self.title)
         print("Duration : ", self.duration)
@@ -36,13 +34,14 @@ class Movie(Video):
         super().get_data()
         self.audience = str(input("Enter the audience : "))
         self.gender = str(input("Enter the gender : "))
+
+    def data_adjust(self):
+        super().data_adjust()
+        self.audience = self.audience.upper()
+        self.gender = self.gender.upper()
     
-    def show_data(self,ID,title,duration,rating,audience,gender):
-        super().show_data(ID,title,duration,rating)
-
-        self.audience = audience
-        self.gender = gender
-
+    def show_data(self):
+        super().show_data()
         print("Audience : ", self.audience)
         print("Gender : ", self.gender)
 
@@ -69,12 +68,12 @@ class Serie(Movie):
 
         self.episode_title = str(input("Enter the episode title : "))
 
-    def show_data(self,ID,title,duration,rating,audience,gender,season,episode,episode_title):
-        super().show_data(ID,title,duration,rating,audience,gender)
+    def data_adjust(self):
+        super().data_adjust()
+        self.episode_title = self.episode_title.upper()
 
-        self.season = season
-        self.episode = episode
-        self.episode_title = episode_title
+    def show_data(self):
+        super().show_data()
 
         if self.season != "":
             print("Season : ", self.season)
@@ -89,36 +88,28 @@ class Documentary(Serie):
     def get_data(self):
         super().get_data()
         self.topic = str(input("Enter the topic : "))
-        return(self.ID,self.title,self.duration,self.rating,self.audience,self.gender,self.season,self.episode,self.episode_title,self.topic)
 
-    def show_data(self,ID,title,duration,rating,audience,gender,season,episode,episode_title,topic):
-        super().show_data(ID,title,duration,rating,audience,gender,season,episode,episode_title)
+    def data_adjust(self):
+        super().data_adjust()
+        self.topic = self.topic.upper()
 
-        self.topic = topic
-
+    def show_data(self):
+        super().show_data()
         if self.topic != "\n":
             print("Topic : ", self.topic)
 
-class Writer():
-    def __init__(self):
-        self.ID = ""
-        self.title = ""
-        self.duration = ""
-        self.rating = ""
-        self.audience = ""
-        self.gender = ""
-        self.season = ""
-        self.episode = ""
-        self.episode_title = ""
-        self.topic = ""
+class Writer(Documentary):
 
+    def get_data(self):
+        super().get_data()
 
     def search(self):
 
         working_dic, __ = self.file_processing()
 
-        lst = working_dic[self.ID]
         try:
+            lst = working_dic[self.ID]
+
             self.ID = lst[9]
             self.title = lst[0]
             self.duration = lst[1]
@@ -133,28 +124,15 @@ class Writer():
             
             if lst[8] != "":
                 self.topic = lst[8]
-                
-            show = Documentary()
-            show.show_data(self.ID,self.title,self.duration,self.rating,self.audience,self.gender,self.season,self.episode,self.episode_title,self.topic)
+
+            self.show_data()
 
         except:
             print("No video was found for the given ID.")
 
 
     def data_adjust(self):
-
-        self.ID = self.ID.upper()
-        self.title = self.title.upper()
-        self.audience = self.audience.upper()
-        self.gender = self.gender.upper()
-        self.episode_title = self.episode_title.upper()
-        self.topic = self.topic.upper()
-
-    def get_data(self):
-
-        documentary = Documentary()
-
-        self.ID,self.title,self.duration,self.rating,self.audience,self.gender,self.season,self.episode,self.episode_title,self.topic = documentary.get_data()
+        super().data_adjust()
 
     def data_writing(self):
 
@@ -163,10 +141,10 @@ class Writer():
             self.season = str(self.season)
             self.episode = str(self.episode)
             self.rating = str(self.rating)
-        
+            
             video_append.write(self.ID + "," + self.title + "," + self.duration + "," + self.rating + "," + self.audience + "," + self.gender + "," + 
-                                self.season + "," + self.episode + "," + self.episode_title + "," + self.topic + "\n" )
-
+                               self.season + "," + self.episode + "," + self.episode_title + "," + self.topic + "\n" )
+                    
     def verify_id_search(self, ID):
         
         self.ID = ID
@@ -257,6 +235,7 @@ class Writer():
             print("Sorry some of the data entered doesn't match the constraints needed, please verify you are using the following input format :\n")
             print("        ID FORMAT\nFirst character : P or S \nSecond character : A, B, C or D \nLast three characters must be unitary natural numbers each\n")
             return (False)
+
 
     def verify_id_general(self):
 
@@ -399,11 +378,10 @@ class Writer():
 
         return(working_dic,current_dic)
 
-class Lists():
+class Lists(Writer):
     def general(self,data, number, upper = "", lower = ""):
 
-        writer = Writer()
-        working_dic, __ = writer.file_processing()
+        working_dic, __ = self.file_processing()
 
         if data != "D\n" and data != "R\n":
             search_dic = {}
