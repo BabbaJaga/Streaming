@@ -257,7 +257,7 @@ class Writer(Documentary):
     def verify_writing(self, lst):
 
         first_char = ['P','S','D']
-
+        
         def clear():
             os.system('cls' if os.name == 'nt' else 'clear')
 

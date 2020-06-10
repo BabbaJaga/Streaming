@@ -295,8 +295,11 @@ class Writer():
             print("Rating format not accepted, you can only rate from 1 to 5 stars")
             sleep(2)
             clear()
-            self.rating = round(float(input("Enter the rating : ")),1)
-
+            
+            try:
+                self.rating = round(float(input("Enter the rating : ")),1)
+            except:
+                print("No text allowed!")
         #movie
 
         if(self.ID[0] == first_char[0]):
