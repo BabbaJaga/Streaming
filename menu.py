@@ -24,23 +24,33 @@ class Menu:
 
     def ask_for_input_rating(self):
 
-        lower = float(input("Please give the lower rating limit: "))
-        upper = float(input("Please give the upper rating limit: "))
+        try:
 
-        lst = range(1,6)
-
-        while (lower not in lst or upper not in lst or lower > upper):
-            print("Rating format not accepted, your rating interval can only be from 1 to 5 stars")
             lower = float(input("Please give the lower rating limit: "))
             upper = float(input("Please give the upper rating limit: "))
-            
-        return upper, lower
 
+            lst = range(1,6)
+
+            while (lower not in lst or upper not in lst or lower > upper):
+                print("Rating format not accepted, your rating interval can only be from 1 to 5 stars")
+                lower = float(input("Please give the lower rating limit: "))
+                upper = float(input("Please give the upper rating limit: "))
+            
+            return upper, lower
+
+        except:
+
+            print("Only integers are accepted!")
+            return None, None
 
     def ask_for_input_menu(self):
 
-        option = int(input("Please choose the desired option: "))
-        return option
+        try:
+            option = int(input("Please choose the desired option: "))
+            return option
+
+        except:
+            print("Text is not allowed!")
 
     def ask_for_data(self):
 
@@ -54,6 +64,7 @@ class Menu:
         name = "ID:"
         removed = array.pop(name)
         array.insert(0, name, removed)
+        array.replace(to_replace=[r"\t|\n|\r"], value=[""], regex=True, inplace=True)
         return(array)
 
     def display_search_results_title(self, array):
@@ -62,7 +73,7 @@ class Menu:
         if array.iloc[0,6] == "":
                 print(array.iloc[:,0:6])
         #series
-        elif array.iloc[0,9] == "\n":
+        elif array.iloc[0,9] == "":
                 print(array.iloc[:,0:9])
         #documentary
         else:

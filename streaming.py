@@ -11,8 +11,15 @@ class Video():
     def get_data(self):
         self.ID = str(input("Enter Id   : "))
         self.title = str(input("Enter Title    : "))
-        self.duration = int(input("Enter Duration     : "))
-        self.rating = round(float(input("Enter the Rating : ")),1)
+        try:
+            self.duration = int(input("Enter Duration     : "))
+        except:
+            self.duration = ""
+        try:    
+            self.rating = round(float(input("Enter the Rating : ")),1)
+        except:
+            self.rating = ""
+
 
     def show_data(self,ID,title,duration,rating):
 
@@ -35,7 +42,7 @@ class Movie(Video):
     def get_data(self):
         super().get_data()
         self.audience = str(input("Enter the audience : "))
-        self.gender = str(input("Enter the gender : "))
+        self.gender = str(input("Enter the genre : "))
     
     def show_data(self,ID,title,duration,rating,audience,gender):
         super().show_data(ID,title,duration,rating)
@@ -58,13 +65,13 @@ class Serie(Movie):
         try:
             self.season = int(input("Enter the season : "))
 
-        except ValueError:
+        except:
             self.season = ""
 
         try:
             self.episode = int(input("Enter the episode : "))
 
-        except ValueError:
+        except:
             self.episode = ""
 
         self.episode_title = str(input("Enter the episode title : "))
@@ -112,13 +119,13 @@ class Writer():
         self.episode_title = ""
         self.topic = ""
 
-
     def search(self):
 
-        working_dic, __ = self.file_processing()
-
-        lst = working_dic[self.ID]
         try:
+            working_dic, __ = self.file_processing()
+
+            lst = working_dic[self.ID]
+
             self.ID = lst[9]
             self.title = lst[0]
             self.duration = lst[1]
@@ -140,7 +147,6 @@ class Writer():
         except:
             print("No video was found for the given ID.")
 
-
     def data_adjust(self):
 
         self.ID = self.ID.upper()
@@ -158,7 +164,7 @@ class Writer():
 
     def data_writing(self):
 
-        with open("movies.csv", "a", encoding="utf-8") as video_append:
+        with open("videos.csv", "a", encoding="utf-8") as video_append:
             self.duration = str(self.duration)
             self.season = str(self.season)
             self.episode = str(self.episode)
@@ -219,8 +225,8 @@ class Writer():
 
     def verify_id_full(self):
 
-        if (len(self.ID) == 5 and len(self.title) <= 30 and self.duration >= 1 and self.duration <= 500 
-            and len(self.audience) <= 15 and len(self.gender) <= 15):
+        if (len(self.ID) == 5 and self.title != "" and len(self.title) <= 30 and self.duration != "" and self.duration >= 1 and self.duration <= 500 
+            and self.audience != "" and len(self.audience) <= 15 and self.gender != "" and len(self.gender) <= 15):
             
             if self.verify_id_complies() == True:
                 answer,lst = self.verify_id_general()
@@ -228,14 +234,18 @@ class Writer():
             
             else:
                 print("The ID does not comply.")
-                return("Failed",lst)
+                return ("Failed", None)
 
         else:
-            print("Sorry some of the data entered doesn't match the constraints needed, please verify you are using the following input format :\n")
-            print("        ID FORMAT\nFirst character : P or S \nSecond character : A, B, C or D \nLast three characters must be unitary natural numbers each \n")
-            print("        TITLE FORMAT\nTitle lenght must contain less than 30 characters")
-            return ("Failed", None)
+            print("Sorry some of the data entered doesn't match the constraints needed, please verify you are using the following input format:\n")
+            print("        ID FORMAT\nFirst character : P or S or D \nSecond character: A, B, C or D \nLast three characters must be unitary natural numbers.\n")
+            print("        TITLE FORMAT\nTitle length must contain less than 30 characters and cannot be left blank.\n")
+            print("        DURATION FORMAT\nVideo length must be between 1 and 500 minutes.\n")
+            print("        RATING FORMAT\nRating must be between 1 and 5 stars.\n")
+            print("        AUDIENCE FORMAT\nAudience length must be less than 15 characters and cannot be left blank.\n")
+            print("        GENRE FORMAT\nGenre length must be less than 15 characters and cannot be left blank.\n")
 
+            return ("Failed", None)
 
     def verify_id_complies(self):
 
@@ -274,7 +284,6 @@ class Writer():
             print("Oops it seems the ID already exists")
             return ("Failed",lst)
 
-
     def verify_writing(self, lst):
 
         first_char = ['P','S','D']
@@ -282,7 +291,7 @@ class Writer():
         def clear():
             os.system('cls' if os.name == 'nt' else 'clear')
 
-        while (self.rating >= 5 or self.rating <= 1):
+        while (self.rating > 5 or self.rating < 1):
             print("Rating format not accepted, you can only rate from 1 to 5 stars")
             sleep(2)
             clear()
@@ -297,10 +306,9 @@ class Writer():
                 print(loading[i], sep=' ', end=' ', flush=True); sleep(0.1)
 
             if (self.title not in lst):
-                print('Successfully added!')
+
                 self.data_writing()
-                print(lst)
-                print(self.title)
+                print('Successfully added!')
 
             else:
                 print("Oops! You cant register a new ID with an existing movie title")
@@ -323,21 +331,32 @@ class Writer():
             loading = 'The ID is being validated...'
             for i in range(0,28):
                 print(loading[i], sep=' ', end=' ', flush=True); sleep(0.1)
-            if (self.topic != ""):
-                print("\nThe ID is valid! We can now validate the documentary properties.")
-                self.season_episode_verification()
+            
+            if (self.season != "" and self.episode != "" and self.episode_title != "" and self.topic != ""):
+
+                response = self.season_episode_verification()
+                if response != None:
+                    print("\nThe Documentary has been added!")
+
+            elif (self.topic != ""):
+
+                self.data_writing()
+                print("\nThe Documentary has been added!")
+                    
             else:
+
                 print("You must enter a topic, in order to add a documentary to the file!")
             
     def season_episode_verification(self):
 
-        if(int(self.season) <=500 and int(self.season) >= 1 and int(self.episode) <= 500 and int(self.episode) >= 1 and len(self.episode_title) <= 30 ):
+        if(self.season != "" and int(self.season) <=500 and int(self.season) >= 1 and self.episode != "" and int(self.episode) <= 500 and int(self.episode) >= 1 and self.episode_title != "" and len(self.episode_title) <= 30 ):
+
             __, current_dic = self.file_processing()
 
             if bool(current_dic) == False:
                 print("The series was non-existent (",self.title, ") it has now been added!")
                 self.data_writing()
-
+                return "Success"
             else:
                 title_dic = {}
                 title_dic[self.title] = current_dic.values()
@@ -360,15 +379,25 @@ class Writer():
                 if self.season not in season_ls:
                     print("A new season has been added to the series: ", self.title)
                     self.data_writing()
+                    return "Success"
+
                 else:
                     if self.episode not in episode_ls:
                         if self.episode_title not in episode_title_ls:
                             print("A new episode has been added to the series: ", self.title, " with season number : ", self.season)
                             self.data_writing()
+                            return "Success"
+
                         else:
                             print("The entry cannot be written because the episode title: ", self.episode_title, "already exists!")
                     else:
                         print("The entry cannot be written because the episode number: ", self.episode, "already exists!")
+        else:
+            print("Sorry some of the data entered doesn't match the constraints needed, please verify you are using the following input format:\n")
+            print("        SEASON FORMAT\nSeason number must be between 1 and 500.\n")
+            print("        EPISODE FORMAT\nEpisode number must be between 1 and 500.\n")
+            print("        EPISODE TITLE FORMAT\nEpisode title length must be less than 30 characters.\n")
+            print("        THEME FORMAT\nTheme length must be less than 30 characters.\n")
 
     def file_processing(self):
 
@@ -416,7 +445,7 @@ class Lists():
                 return(None)
 
             else:
-                print("The following entries with the given keywords were found.")
+                print("The following entries with the given keywords were found:")
                 return(search_dic)
 
         elif data == "D\n" and data != "R\n":
@@ -431,7 +460,7 @@ class Lists():
                 return(None)
 
             else:
-                print("The following entries with the given keywords were found.")
+                print("The following entries with the given keywords were found:")
                 return(search_dic)
 
         else:
@@ -445,5 +474,5 @@ class Lists():
                 return(None)
 
             else:
-                print("The following entries with the given ratings were found.")
+                print("The following entries with the given ratings were found:")
                 return(search_dic)

@@ -68,12 +68,17 @@ if __name__ == "__main__":
 
         elif option == 9:
             upper,lower = Menu.ask_for_input_rating()
-            Lists = streaming.Lists()
-            search_dic = Lists.general("R\n",2, upper, lower)
-            array = Menu.search_results_adjust(search_dic)
-            Menu.display_search_results_general(array)
+            
+            if upper != None and lower != None:
+                Lists = streaming.Lists()
+                search_dic = Lists.general("R\n",2, upper, lower)
+                array = Menu.search_results_adjust(search_dic)
+                Menu.display_search_results_general(array)
 
         elif option == 10:
             print("Exiting program...")
             quit()
+
+        else:
+            print("Invalid option!")
 
