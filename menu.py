@@ -60,33 +60,55 @@ class Menu:
 
     def search_results_adjust(self,search_dic):
 
-        array = pandas.DataFrame(data=search_dic.values(), columns = ["TITLE:", "DURATION:", "RATING:", "GENRE:", "AUDIENCE:", "SEASON:", "EPISODE:", "EPISODE TITLE:", "THEME:","ID:"])
-        name = "ID:"
-        removed = array.pop(name)
-        array.insert(0, name, removed)
-        array.replace(to_replace=[r"\t|\n|\r"], value=[""], regex=True, inplace=True)
-        return(array)
+        if search_dic != None:
+            array = pandas.DataFrame(data=search_dic.values(), columns = ["TITLE:", "DURATION:", "RATING:", "GENRE:", "AUDIENCE:", "SEASON:", "EPISODE:", "EPISODE TITLE:", "THEME:","ID:"])
+            name = "ID:"
+            removed = array.pop(name)
+            array.insert(0, name, removed)
+            array.replace(to_replace=[r"\t|\n|\r"], value=[""], regex=True, inplace=True)
+            return(array)
+
+        else:
+            return "Not found"
+
 
     def display_search_results_title(self, array):
 
-        #movie
-        if array.iloc[0,6] == "":
-                print(array.iloc[:,0:6])
-        #series
-        elif array.iloc[0,9] == "":
-                print(array.iloc[:,0:9])
-        #documentary
-        else:
-                print(array)
+        if type(array) != "<class 'pandas.core.frame.DataFrame'>":
 
+            #movie
+            if array.iloc[0,6] == "":
+                    print(array.iloc[:,0:6])
+            #series
+            elif array.iloc[0,9] == "":
+                    print(array.iloc[:,0:9])
+            #documentary
+            else:
+                    print(array)
+
+        else:
+            pass
     def display_search_results_general(self, array):
-        print(array)
+
+        if type(array) != "<class 'pandas.core.frame.DataFrame'>":
+            print(array)
+        
+        else:
+            pass
 
     def display_search_results_movies(self, array):
 
-        print(array.iloc[:,0:6])
+        if type(array) != "<class 'pandas.core.frame.DataFrame'>":
+            print(array.iloc[:,0:6])
+        
+        else:
+            pass
 
     def display_search_results_series(self, array):
 
-        print(array.iloc[:,0:9])
+        if type(array) != "<class 'pandas.core.frame.DataFrame'>":
+            print(array.iloc[:,0:9])
+
+        else:
+            pass
         

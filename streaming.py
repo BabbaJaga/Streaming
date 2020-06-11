@@ -404,32 +404,40 @@ class Writer():
 
     def file_processing(self):
 
-        with open("videos.csv", "r", encoding="utf-8") as movie_reading:
-            
+        try:
+
             working_dic = {}
             current_dic = {}
 
-            lines = movie_reading.readlines()
+            with open("videos.csv", "r", encoding="utf-8") as movie_reading:
 
-            for l in lines:
-                string = l.split(",")
-                key = string[0]
-                title = string[1]
-                duration = string[2]
-                rating = string[3]
-                audience = string[4]
-                gender = string[5]
-                season = string[6]
-                episode = string[7]
-                ep_title = string[8]
-                topic = string[9]
+                lines = movie_reading.readlines()
 
-                working_dic[key] = title, duration, rating, audience, gender, season, episode, ep_title, topic, key
-                
-                if self.title != None and self.title == title:
-                    current_dic[key] = season,episode,ep_title
+                for l in lines:
+                    string = l.split(",")
+                    key = string[0]
+                    title = string[1]
+                    duration = string[2]
+                    rating = string[3]
+                    audience = string[4]
+                    gender = string[5]
+                    season = string[6]
+                    episode = string[7]
+                    ep_title = string[8]
+                    topic = string[9]
 
-        return(working_dic,current_dic)
+                    working_dic[key] = title, duration, rating, audience, gender, season, episode, ep_title, topic, key
+                    
+                    if self.title != None and self.title == title:
+                        current_dic[key] = season,episode,ep_title
+
+            return(working_dic,current_dic)
+
+        except:
+
+            print("We can't find the videos.csv file!")
+
+            return(working_dic,current_dic)
 
 class Lists():
     def general(self,data, number, upper = "", lower = ""):
